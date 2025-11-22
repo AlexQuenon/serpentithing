@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bc1bj0dh2h5ar"
-path="res://.godot/imported/chimney.png-4478688b2ee938588d24f671362d8c93.ctex"
+uid="uid://br8asgdmdwfd"
+path="res://.godot/imported/tile_atlas2.png-895209f2316eb2d86b67a8e22d1db529.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/chimney.png"
-dest_files=["res://.godot/imported/chimney.png-4478688b2ee938588d24f671362d8c93.ctex"]
+source_file="res://assets/tile_atlas2.png"
+dest_files=["res://.godot/imported/tile_atlas2.png-895209f2316eb2d86b67a8e22d1db529.ctex"]
 
 [params]
 
