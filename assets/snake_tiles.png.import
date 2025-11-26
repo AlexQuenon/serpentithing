@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cux6oki34oyu6"
-path="res://.godot/imported/tile_atlas.png-f20f463f080df8ef4c68366accb9fb7b.ctex"
+uid="uid://gxp4dmdu0pvr"
+path="res://.godot/imported/snake_tiles.png-e2b5a94cf8bc6b7b4870d27a9a3e62a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tile_atlas.png"
-dest_files=["res://.godot/imported/tile_atlas.png-f20f463f080df8ef4c68366accb9fb7b.ctex"]
+source_file="res://assets/snake_tiles.png"
+dest_files=["res://.godot/imported/snake_tiles.png-e2b5a94cf8bc6b7b4870d27a9a3e62a8.ctex"]
 
 [params]
 

@@ -11,13 +11,20 @@ config_version=5
 [application]
 
 config/name="SerpentTithing"
-run/main_scene="uid://c4s5tk5qx3lo0"
+run/main_scene="uid://bav7wr8d4dion"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="uid://yt14vql5v68b"
 
 [autoload]
 
 BetterTerrain="*res://addons/better-terrain/BetterTerrain.gd"
+
+[display]
+
+window/size/viewport_width=800
+window/size/viewport_height=800
+window/stretch/scale=2.0
+window/stretch/scale_mode="integer"
 
 [editor_plugins]
 
