@@ -37,6 +37,7 @@ func _process(_delta):
 	if move != Move.NONE:
 		if apply_move(move):
 			print("TODO: %s successful" % move)
+			emit_coordinates_updated_signal()
 		else:
 			print("TODO: %s failed" % move)
 
@@ -93,6 +94,7 @@ func push_blocks(move : Move):
 				return false
 		else:
 			affected.append(i)
+		pushed += direction
 
 	# Check if we pushed into a wall
 	if (
@@ -129,5 +131,4 @@ func add_segment(coordinates):
 
 
 func emit_coordinates_updated_signal():
-	print("Coordinates updated: %s, %s" % [snake_coords, box_coords])
-	coordinates_updated.emit(snake_coords, box_coords)
+	coordinates_updated.emit(snake_coords, box_coords, last_direction)
