@@ -14,4 +14,8 @@ func render(snake_coords, box_coords, last_direction):
 		$"9",
 		$"10",
 	]:
-		layer.render(snake_coords, box_coords, last_direction)
+		var shadow_hints = {}
+		for coords in snake_coords + box_coords:
+			var xy = Vector2i(coords.x, coords.y)
+			shadow_hints[xy] = max(shadow_hints.get(xy, 0), coords.z)
+		layer.render(snake_coords, box_coords, last_direction, shadow_hints)

@@ -61,10 +61,10 @@ func _ready():
 		for j in range(Level.SIZE):
 			if sides_visible(i, j):
 				%WallDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, WALL_DECORATION_COORDS[layer_index])
-	render([], [], Snake.Move.DOWN)
+	render([], [], Snake.Move.DOWN, {})
 
 
-func render(snake_coords, box_coords, direction):
+func render(snake_coords, box_coords, direction, shadow_hints):
 	# TODO: cache snake/box locations to avoid overdoing it
 	%Tiles.clear()
 	%FaceDecoration.clear()
@@ -76,6 +76,7 @@ func render(snake_coords, box_coords, direction):
 
 	for i in range(Level.SIZE):
 		for j in range(Level.SIZE):
+			var coord = Vector2i(i, j)
 			if Level.HEIGHT_MAP[i][j] == layer_index:
 				if [i, j] in Level.GOALS:
 					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, GOAL_COORDS)
@@ -83,6 +84,8 @@ func render(snake_coords, box_coords, direction):
 					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, TILE_COORDS)
 				if layer_index + 1 == active_floor:
 					%FaceDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, FACE_DECORATION_COORDS)
+			if shadow_hints.get(coord, 0) > layer_index and %Tiles.get_cell_tile_data(coord) != null:
+				%ShadowDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
 
 	if layer_index == active_floor:
 		for i in range(snake_coords.size()):
@@ -96,7 +99,7 @@ func render(snake_coords, box_coords, direction):
 			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
 
 	# TODO: vvv Remember to do boxes too for brief falling duration
-	# TODO: %ShadowDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
+	# TODO:
 
 
 func get_snake_tile(index, snake_size, direction):
