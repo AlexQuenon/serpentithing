@@ -43,3 +43,7 @@ layer_index = 8
 
 [node name="9" parent="." instance=ExtResource("2_giubl")]
 layer_index = 9
+
+[node name="10" parent="." instance=ExtResource("2_giubl")]
+position = Vector2(-6, -6)
+layer_index = 10

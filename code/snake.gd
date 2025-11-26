@@ -1,0 +1,133 @@
+class_name Snake
+extends Node
+
+signal coordinates_updated(snake_coords, box_coords, last_direction)
+
+enum Move {
+	NONE,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	DETACH,
+}
+
+const MOVE_MAP = {
+	Move.UP: Vector3i(0, -1, 0),
+	Move.DOWN: Vector3i(0, 1, 0),
+	Move.LEFT: Vector3i(-1, 0, 0),
+	Move.RIGHT: Vector3i(1, 0, 0),
+}
+const ABOVE = Vector3i(0, 0, 1)
+const START_POSITION = Vector3i(0, 0, 10)
+const START_DIRECTION = Move.DOWN
+const SIZE = 10
+
+var snake_coords = []
+var box_coords = []
+var last_direction = Move.DOWN
+
+func _ready():
+	add_segment(START_POSITION)
+	emit_coordinates_updated_signal()
+
+
+func _process(_delta):
+	var move : Move = get_input_action()
+	if move != Move.NONE:
+		if apply_move(move):
+			print("TODO: %s successful" % move)
+		else:
+			print("TODO: %s failed" % move)
+
+
+func get_input_action():
+	if Input.is_action_just_pressed('detach'):
+		return Move.DETACH
+	if Input.is_action_just_pressed('ui_up'):
+		return Move.UP
+	if Input.is_action_just_pressed('ui_down'):
+		return Move.DOWN
+	if Input.is_action_just_pressed('ui_left'):
+		return Move.LEFT
+	if Input.is_action_just_pressed('ui_right'):
+		return Move.RIGHT
+	return Move.NONE
+
+
+func apply_move(move : Move):
+	match move:
+		Move.DETACH:
+			if snake_coords.size() == 1 or snake_coords.size() + box_coords.size() < SIZE:
+				return false
+			box_coords.push_back(snake_coords.pop_back())
+		Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT:
+			if not push_blocks(move):
+				return false
+		_:
+			return false
+
+	# TODO: manage falling snakes and blocks (+towers)
+
+	return true
+
+
+func push_blocks(move : Move):
+	var direction : Vector3i = MOVE_MAP[move]
+	var universal_coords = snake_coords + box_coords
+	var pushed_map = {}
+	for i in range(universal_coords.size()):
+		pushed_map[universal_coords[i]] = i
+
+	var pushed = snake_coords[0] + direction
+	var affected = []
+	while pushed in universal_coords:
+		var i = pushed_map[pushed]
+		if i < snake_coords.size():
+			if i == snake_coords.size() - 1:
+				if snake_coords.size() == 2 or snake_coords.size() + box_coords.size() < SIZE:
+					return false
+				else:
+					break
+			else:
+				return false
+		else:
+			affected.append(i)
+
+	# Check if we pushed into a wall
+	if (
+		min(pushed.x, pushed.y) < 0 or
+		Level.SIZE <= max(pushed.x, pushed.y) or
+		Level.HEIGHT_MAP[pushed.x][pushed.y] >= pushed.z
+	):
+		return false
+
+	# Include stacks of blocks in the pushed list
+	# NOTE: This assumes there is no way to carry blocks on the snake
+	for ii in range(affected.size()):
+		var i = affected[ii]
+		if i < snake_coords.size():
+			var curr = box_coords[i - snake_coords.size()] + ABOVE
+			while curr in universal_coords:
+				affected.append(universal_coords[curr])
+				curr += ABOVE
+
+	# NOTE: Snake cannot push self and so these are only boxes
+	for i in affected:
+		box_coords[i - snake_coords.size()] += direction
+
+	add_segment(snake_coords[0] + direction)
+	last_direction = move
+
+	return true
+
+
+func add_segment(coordinates):
+	snake_coords.push_front(coordinates)
+	if snake_coords.size() + box_coords.size() > SIZE:
+		snake_coords.pop_back()
+
+
+func emit_coordinates_updated_signal():
+	print("Coordinates updated: %s, %s" % [snake_coords, box_coords])
+	coordinates_updated.emit(snake_coords, box_coords)
