@@ -15,10 +15,6 @@ run/main_scene="uid://bav7wr8d4dion"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="uid://yt14vql5v68b"
 
-[autoload]
-
-BetterTerrain="*res://addons/better-terrain/BetterTerrain.gd"
-
 [display]
 
 window/size/viewport_width=800

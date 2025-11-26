@@ -81,7 +81,7 @@ func render(snake_coords, box_coords, direction):
 					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, GOAL_COORDS)
 				else:
 					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, TILE_COORDS)
-				if layer_index == active_floor:  # TODO: TEMP
+				if layer_index + 1 == active_floor:
 					%FaceDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, FACE_DECORATION_COORDS)
 
 	if layer_index == active_floor:
@@ -107,7 +107,7 @@ func get_snake_tile(index, snake_size, direction):
 
 	var tile = BODY_COORDS
 
-	# TODO: check edge cases for different tiles
+	# TODO: check edge cases for solo snake and activation state
 	if index == 0:
 		tile = HEAD_COORDS[state][alignment]
 	elif index == Snake.SIZE - 1:
