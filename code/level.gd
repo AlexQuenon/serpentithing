@@ -30,3 +30,7 @@ const GOALS = [
 	[5, 9],
 	[9, 9],
 ]
+
+
+static func coord_on_goal(coord : Vector3i):
+	return [coord.x, coord.y] in GOALS and coord.z == HEIGHT_MAP[coord.x][coord.y] + 1

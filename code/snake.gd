@@ -23,7 +23,7 @@ const BELOW = Vector3i(0, 0, -1)
 const START_POSITION = Vector3i(0, 0, 10)
 const START_DIRECTION = Move.DOWN
 const SIZE = 10
-const FALL_SPEED = 0.1
+const FALL_SPEED = 0.15
 
 var snake_coords = []
 var block_coords = []
@@ -31,7 +31,7 @@ var last_direction : Move = Move.DOWN
 var fall_timer : float = 0
 var falling_snake : bool = false
 var falling_blocks = []
-var awaiting_state_checkpoint = false
+var has_won = false
 
 func _ready():
 	add_segment(START_POSITION)
@@ -41,31 +41,49 @@ func _ready():
 
 
 func _process(delta):
+	if has_won:
+		return
+
+	var blocks_on_goals_before = blocks_on_goal()
+	var snake_on_goal_before = snake_coords.size() == 1 and Level.coord_on_goal(snake_coords[0])
 	if blocks_are_falling():
 		fall_timer += delta
 		if fall_timer > FALL_SPEED:
-			make_blocks_fall()
 			fall_timer = 0.0
-	else:
-		if awaiting_state_checkpoint:
+			while blocks_are_falling():
+				make_blocks_fall()
+				flag_falling_blocks()
+			AudioManager.play_landing()
 			log_state_checkpoint()
-			awaiting_state_checkpoint = false
-
+	else:
 		var move : Move = get_input_action()
 		if move != Move.NONE:
 			if apply_move(move):
-				# TODO: UNDO SAVE STATE
-				# state get/set
-				awaiting_state_checkpoint = true
 				emit_coordinates_updated_signal()
 				if move == Move.DETACH:
 					AudioManager.play_detach()
 				else:
 					AudioManager.play_move()
+
+				flag_falling_blocks()
+				if not blocks_are_falling():
+					log_state_checkpoint()
 			else:
 				AudioManager.play_blocked()
 
-	flag_falling_blocks()
+	var blocks_on_goals_after = blocks_on_goal()
+	var snake_on_goal_after = snake_coords.size() == 1 and Level.coord_on_goal(snake_coords[0])
+	var new_blocks_on_goal = false
+	var new_snake_on_goal = snake_on_goal_after and not snake_on_goal_before
+	for i in blocks_on_goals_after:
+		if i not in blocks_on_goals_before:
+			new_blocks_on_goal = true
+			break
+	if snake_on_goal_after and blocks_on_goals_after.size() == SIZE - 1:
+		AudioManager.play_win()
+		has_won = true
+	elif new_snake_on_goal or new_blocks_on_goal:
+		AudioManager.play_goal()
 
 
 func get_state():
@@ -84,7 +102,7 @@ func reset_implicit_state():
 	fall_timer = 0
 	falling_snake = false
 	falling_blocks = []
-	awaiting_state_checkpoint = false
+	has_won = false
 
 
 func log_state_checkpoint():
@@ -214,6 +232,14 @@ func add_segment(coordinates):
 	snake_coords.push_front(coordinates)
 	if snake_coords.size() + block_coords.size() > SIZE:
 		snake_coords.pop_back()
+
+
+func blocks_on_goal():
+	var result = {}
+	for i in range(block_coords.size()):
+		if Level.coord_on_goal(block_coords[i]):
+			result[i] = true
+	return result
 
 
 func emit_coordinates_updated_signal():

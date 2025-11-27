@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://borq1hjygiesv"]
+[gd_scene load_steps=14 format=3 uid="uid://borq1hjygiesv"]
 
 [ext_resource type="Script" uid="uid://br6536acpatkn" path="res://code/audio_manager.gd" id="1_liach"]
 [ext_resource type="AudioStream" uid="uid://bvl3bhhorwk81" path="res://sfx/blocked.wav" id="2_3asnw"]
 [ext_resource type="AudioStream" uid="uid://caf77diarhkgf" path="res://sfx/move.wav" id="2_m6ggh"]
 [ext_resource type="AudioStream" uid="uid://cstmp2edluw6g" path="res://sfx/undo.wav" id="4_m6ggh"]
 [ext_resource type="AudioStream" uid="uid://ch5he0ix1h3vj" path="res://sfx/detach.wav" id="5_aoitu"]
+[ext_resource type="AudioStream" uid="uid://c7op8no3djpuq" path="res://sfx/landing.wav" id="6_njtn3"]
+[ext_resource type="AudioStream" uid="uid://b2aiw0v28636p" path="res://sfx/goal.wav" id="7_02gw7"]
+[ext_resource type="AudioStream" uid="uid://diqhuxrgf2jqr" path="res://sfx/win.wav" id="8_ujhup"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_m6ggh"]
 random_pitch = 1.5
@@ -26,6 +29,11 @@ random_pitch = 1.2
 streams_count = 1
 stream_0/stream = ExtResource("5_aoitu")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_02gw7"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("6_njtn3")
+
 [node name="AudioManager" type="Node"]
 script = ExtResource("1_liach")
 
@@ -44,3 +52,16 @@ stream = SubResource("AudioStreamRandomizer_njtn3")
 [node name="Detach" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = SubResource("AudioStreamRandomizer_kq7b2")
+
+[node name="Landing" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_02gw7")
+volume_db = -3.817
+
+[node name="Goal" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("7_02gw7")
+
+[node name="Win" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("8_ujhup")

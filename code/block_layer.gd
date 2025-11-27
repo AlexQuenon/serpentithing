@@ -109,7 +109,7 @@ func get_snake_tile(index, coord, snake_size, box_size, direction):
 		alignment = Alignment.HORIZONTAL
 	var state = BoxState.CONNECTED  # TODO: branch
 	if snake_size == 1 and box_size == Snake.SIZE - snake_size:
-		if coord_on_goal(coord):
+		if Level.coord_on_goal(coord):
 			state = BoxState.ON
 		else:
 			state = BoxState.OFF
@@ -126,13 +126,9 @@ func get_snake_tile(index, coord, snake_size, box_size, direction):
 
 
 func get_box_tile(coord):
-	if coord_on_goal(coord):
+	if Level.coord_on_goal(coord):
 		return TAIL_COORDS[BoxState.ON]
 	return TAIL_COORDS[BoxState.OFF]
-
-
-func coord_on_goal(coord):
-	return [coord.x, coord.y] in Level.GOALS and coord.z == Level.HEIGHT_MAP[coord.x][coord.y] + 1
 
 
 func sides_visible(i, j):

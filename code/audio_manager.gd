@@ -11,3 +11,12 @@ func play_undo():
 
 func play_detach():
 	%Detach.play()
+
+func play_landing():
+	%Landing.play()
+
+func play_goal():
+	%Goal.play()
+
+func play_win():
+	%Win.play()
