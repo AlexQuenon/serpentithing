@@ -1,7 +1,7 @@
 class_name Snake
 extends Node
 
-signal coordinates_updated(snake_coords, block_coords, last_direction)
+signal coordinates_updated(snake_coords, block_coords, last_direction, goals_met)
 signal win
 
 enum Move {
@@ -114,13 +114,13 @@ func log_state_checkpoint():
 func get_input_action():
 	if Input.is_action_just_pressed('detach'):
 		return Move.DETACH
-	if Input.is_action_just_pressed('ui_up'):
+	if Input.is_action_just_pressed('up'):
 		return Move.UP
-	if Input.is_action_just_pressed('ui_down'):
+	if Input.is_action_just_pressed('down'):
 		return Move.DOWN
-	if Input.is_action_just_pressed('ui_left'):
+	if Input.is_action_just_pressed('left'):
 		return Move.LEFT
-	if Input.is_action_just_pressed('ui_right'):
+	if Input.is_action_just_pressed('right'):
 		return Move.RIGHT
 	return Move.NONE
 
@@ -243,4 +243,9 @@ func blocks_on_goal():
 
 
 func emit_coordinates_updated_signal():
-	coordinates_updated.emit(snake_coords, block_coords, last_direction)
+	var goals_met = count_goals()
+	coordinates_updated.emit(snake_coords, block_coords, last_direction, goals_met)
+
+
+func count_goals():
+	return blocks_on_goal().size() + int(snake_coords.size() == 1 and Level.coord_on_goal(snake_coords[0]))
