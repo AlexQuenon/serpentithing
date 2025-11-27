@@ -1,7 +1,7 @@
 class_name Snake
 extends Node
 
-signal coordinates_updated(snake_coords, box_coords, last_direction)
+signal coordinates_updated(snake_coords, block_coords, last_direction)
 
 enum Move {
 	NONE,
@@ -19,28 +19,42 @@ const MOVE_MAP = {
 	Move.RIGHT: Vector3i(1, 0, 0),
 }
 const ABOVE = Vector3i(0, 0, 1)
+const BELOW = Vector3i(0, 0, -1)
 const START_POSITION = Vector3i(0, 0, 10)
 const START_DIRECTION = Move.DOWN
 const SIZE = 10
+const FALL_SPEED = 0.1
 
 var snake_coords = []
-var box_coords = []
-var last_direction = Move.DOWN
+var block_coords = []
+var last_direction : Move = Move.DOWN
+var fall_timer : float = 0
+var falling_snake : bool = false
+var falling_blocks = []
 
 func _ready():
 	add_segment(START_POSITION)
 	emit_coordinates_updated_signal()
 
 
-func _process(_delta):
-	var move : Move = get_input_action()
-	if move != Move.NONE:
-		if apply_move(move):
-			print("TODO: %s successful" % move)
-			emit_coordinates_updated_signal()
-		else:
-			print("TODO: %s failed" % move)
+func _process(delta):
+	if blocks_are_falling():
+		fall_timer += delta
+		if fall_timer > FALL_SPEED:
+			make_blocks_fall()
+			fall_timer = 0.0
+	else:
+		var move : Move = get_input_action()
+		if move != Move.NONE:
+			if apply_move(move):
+				print("TODO: %s successful" % move)
+				# TODO: UNDO SAVE STATE
+				# state get/set
+				emit_coordinates_updated_signal()
+			else:
+				print("TODO: %s failed" % move)
 
+	flag_falling_blocks()
 
 func get_input_action():
 	if Input.is_action_just_pressed('detach'):
@@ -59,9 +73,9 @@ func get_input_action():
 func apply_move(move : Move):
 	match move:
 		Move.DETACH:
-			if snake_coords.size() == 1 or snake_coords.size() + box_coords.size() < SIZE:
+			if snake_coords.size() == 1 or snake_coords.size() + block_coords.size() < SIZE:
 				return false
-			box_coords.push_back(snake_coords.pop_back())
+			block_coords.push_back(snake_coords.pop_back())
 		Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT:
 			if not push_blocks(move):
 				return false
@@ -75,7 +89,7 @@ func apply_move(move : Move):
 
 func push_blocks(move : Move):
 	var direction : Vector3i = MOVE_MAP[move]
-	var universal_coords = snake_coords + box_coords
+	var universal_coords = snake_coords + block_coords
 	var pushed_map = {}
 	for i in range(universal_coords.size()):
 		pushed_map[universal_coords[i]] = i
@@ -86,7 +100,7 @@ func push_blocks(move : Move):
 		var i = pushed_map[pushed]
 		if i < snake_coords.size():
 			if i == snake_coords.size() - 1:
-				if snake_coords.size() == 2 or snake_coords.size() + box_coords.size() < SIZE:
+				if snake_coords.size() == 2 or snake_coords.size() + block_coords.size() < SIZE:
 					return false
 				else:
 					break
@@ -109,14 +123,14 @@ func push_blocks(move : Move):
 	for ii in range(affected.size()):
 		var i = affected[ii]
 		if i < snake_coords.size():
-			var curr = box_coords[i - snake_coords.size()] + ABOVE
+			var curr = block_coords[i - snake_coords.size()] + ABOVE
 			while curr in universal_coords:
 				affected.append(universal_coords[curr])
 				curr += ABOVE
 
 	# NOTE: Snake cannot push self and so these are only boxes
 	for i in affected:
-		box_coords[i - snake_coords.size()] += direction
+		block_coords[i - snake_coords.size()] += direction
 
 	add_segment(snake_coords[0] + direction)
 	last_direction = move
@@ -124,11 +138,48 @@ func push_blocks(move : Move):
 	return true
 
 
+func make_blocks_fall():
+	if falling_snake:
+		for i in range(snake_coords.size()):
+			snake_coords[i] += BELOW
+	for i in falling_blocks:
+		block_coords[i] += BELOW
+
+	emit_coordinates_updated_signal()
+
+
+func flag_falling_blocks():
+	var block_map = {}
+	for coord in snake_coords + block_coords:
+		block_map[coord] = true
+
+	falling_snake = true
+	for coord in snake_coords:
+		var curr = coord
+		while curr in block_map:
+			curr += BELOW
+		if Level.HEIGHT_MAP[curr.x][curr.y] == curr.z:
+			falling_snake = false
+			break
+
+	falling_blocks = []
+	for i in range(block_coords.size()):
+		var curr = block_coords[i]
+		while curr in block_map:
+			curr += BELOW
+		if curr.z > Level.HEIGHT_MAP[curr.x][curr.y]:
+			falling_blocks.append(i)
+
+
+func blocks_are_falling():
+	return falling_snake or falling_blocks
+
+
 func add_segment(coordinates):
 	snake_coords.push_front(coordinates)
-	if snake_coords.size() + box_coords.size() > SIZE:
+	if snake_coords.size() + block_coords.size() > SIZE:
 		snake_coords.pop_back()
 
 
 func emit_coordinates_updated_signal():
-	coordinates_updated.emit(snake_coords, box_coords, last_direction)
+	coordinates_updated.emit(snake_coords, block_coords, last_direction)

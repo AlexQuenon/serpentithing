@@ -64,7 +64,7 @@ func _ready():
 	render([], [], Snake.Move.DOWN, {})
 
 
-func render(snake_coords, box_coords, direction, shadow_hints):
+func render(snake_coords, block_coords, direction, shadow_hints):
 	# TODO: cache snake/box locations to avoid overdoing it
 	%Tiles.clear()
 	%FaceDecoration.clear()
@@ -73,6 +73,19 @@ func render(snake_coords, box_coords, direction, shadow_hints):
 	var active_floor = -1
 	if snake_coords:
 		active_floor = (snake_coords[0] as Vector3i).z
+
+
+	if layer_index == active_floor:
+		for i in range(snake_coords.size()):
+			var coords : Vector3i = snake_coords[i]
+			var tile = get_snake_tile(i, snake_coords[i], snake_coords.size(), block_coords.size(), direction)
+			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
+
+	for coords in block_coords:
+		if layer_index == coords.z:
+			var tile = get_box_tile(coords)
+			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
+
 
 	for i in range(Level.SIZE):
 		for j in range(Level.SIZE):
@@ -87,40 +100,37 @@ func render(snake_coords, box_coords, direction, shadow_hints):
 			if shadow_hints.get(coord, 0) > layer_index and %Tiles.get_cell_tile_data(coord) != null:
 				%ShadowDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
 
-	if layer_index == active_floor:
-		for i in range(snake_coords.size()):
-			var coords : Vector3i = snake_coords[i]
-			var tile = get_snake_tile(i, snake_coords.size(), direction)
-			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
 
-	for coords in box_coords:
-		if layer_index == coords.z:
-			var tile = get_box_tile(coords)
-			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
-
-	# TODO: vvv Remember to do boxes too for brief falling duration
-	# TODO:
-
-
-func get_snake_tile(index, snake_size, direction):
+func get_snake_tile(index, coord, snake_size, box_size, direction):
 	var alignment = Alignment.VERTICAL
 	if direction in [Snake.Move.LEFT, Snake.Move.RIGHT]:
 		alignment = Alignment.HORIZONTAL
 	var state = BoxState.CONNECTED  # TODO: branch
+	if snake_size == 1 and box_size == Snake.SIZE - snake_size:
+		if coord_on_goal(coord):
+			state = BoxState.ON
+		else:
+			state = BoxState.OFF
 
 	var tile = BODY_COORDS
 
 	# TODO: check edge cases for solo snake and activation state
+
 	if index == 0:
 		tile = HEAD_COORDS[state][alignment]
-	elif index == Snake.SIZE - 1:
+	elif index == Snake.SIZE - 1 - box_size:
 		tile = TAIL_COORDS[state]
 	return tile
 
 
-func get_box_tile(coords):
-	# TODO: check on/off
+func get_box_tile(coord):
+	if coord_on_goal(coord):
+		return TAIL_COORDS[BoxState.ON]
 	return TAIL_COORDS[BoxState.OFF]
+
+
+func coord_on_goal(coord):
+	return [coord.x, coord.y] in Level.GOALS and coord.z == Level.HEIGHT_MAP[coord.x][coord.y] + 1
 
 
 func sides_visible(i, j):

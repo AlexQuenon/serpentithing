@@ -1,6 +1,6 @@
 extends Node2D
 
-func render(snake_coords, box_coords, last_direction):
+func render(snake_coords, block_coords, last_direction):
 	for layer in [
 		$"0",
 		$"1",
@@ -15,7 +15,7 @@ func render(snake_coords, box_coords, last_direction):
 		$"10",
 	]:
 		var shadow_hints = {}
-		for coords in snake_coords + box_coords:
+		for coords in snake_coords + block_coords:
 			var xy = Vector2i(coords.x, coords.y)
 			shadow_hints[xy] = max(shadow_hints.get(xy, 0), coords.z)
-		layer.render(snake_coords, box_coords, last_direction, shadow_hints)
+		layer.render(snake_coords, block_coords, last_direction, shadow_hints)
