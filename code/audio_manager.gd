@@ -2,6 +2,8 @@ extends Node
 
 func set_mute(mute):
 	AudioServer.set_bus_mute(0, mute)
+	if not mute:
+		%Sound.play()
 
 func play_move():
 	%Move.play()

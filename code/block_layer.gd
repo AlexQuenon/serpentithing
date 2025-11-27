@@ -96,10 +96,10 @@ func render(snake_coords, block_coords, direction, shadow_hints):
 					%Tiles.set_cell(coord, ATLAS_SOURCE, GOAL_COORDS)
 				else:
 					%Tiles.set_cell(coord, ATLAS_SOURCE, TILE_COORDS)
-				if layer_index + 1 == active_floor:
-					%FaceDecoration.set_cell(coord, ATLAS_SOURCE, FACE_DECORATION_COORDS)
 			if shadow_hints.get(coord, 0) > layer_index and %Tiles.get_cell_tile_data(coord) != null:
 				%ShadowDecoration.set_cell(coord, ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
+			if layer_index + 1 == active_floor and %Tiles.get_cell_tile_data(coord) != null:
+				%FaceDecoration.set_cell(coord, ATLAS_SOURCE, FACE_DECORATION_COORDS)
 
 
 func get_snake_tile(index, coord, snake_size, box_size, direction):

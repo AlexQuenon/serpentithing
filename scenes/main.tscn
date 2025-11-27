@@ -45,6 +45,7 @@ position = Vector2(20, 30)
 [node name="Snake" parent="." instance=ExtResource("3_sugp2")]
 
 [node name="Hidden" type="Label" parent="."]
+unique_name_in_owner = true
 offset_left = 4.0
 offset_top = -1.0
 offset_right = 52.0
@@ -89,9 +90,9 @@ unique_name_in_owner = true
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = 152.0
-offset_right = 237.0
-offset_bottom = 40.0
+offset_left = 183.0
+offset_right = 241.0
+offset_bottom = 26.0
 grow_horizontal = 2
 
 [node name="ProgressCount" type="Label" parent="Progress"]
@@ -99,7 +100,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_fonts/font = ExtResource("5_tefeu")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 16
 text = "0/10"
 
 [node name="TextureRect" type="TextureRect" parent="Progress"]

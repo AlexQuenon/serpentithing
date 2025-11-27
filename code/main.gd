@@ -2,6 +2,7 @@ extends Node2D
 
 
 func _on_snake_coordinates_updated(snake_coords, block_coords, last_direction, goals_met):
+	%Hidden.show()
 	%Progress.show()
 	%ProgressCount.text = "%s/10" % goals_met
 	%Winner.hide()
@@ -9,6 +10,7 @@ func _on_snake_coordinates_updated(snake_coords, block_coords, last_direction, g
 
 
 func _on_snake_win():
+	%Hidden.hide()
 	%Progress.hide()
 	%Winner.reset()
 	%Winner.show()

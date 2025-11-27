@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://borq1hjygiesv"]
+[gd_scene load_steps=15 format=3 uid="uid://borq1hjygiesv"]
 
 [ext_resource type="Script" uid="uid://br6536acpatkn" path="res://code/audio_manager.gd" id="1_liach"]
 [ext_resource type="AudioStream" uid="uid://bvl3bhhorwk81" path="res://sfx/blocked.wav" id="2_3asnw"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://c7op8no3djpuq" path="res://sfx/landing.wav" id="6_njtn3"]
 [ext_resource type="AudioStream" uid="uid://b2aiw0v28636p" path="res://sfx/goal.wav" id="7_02gw7"]
 [ext_resource type="AudioStream" uid="uid://diqhuxrgf2jqr" path="res://sfx/win.wav" id="8_ujhup"]
+[ext_resource type="AudioStream" uid="uid://cm5elr2r21h38" path="res://sfx/sound.wav" id="9_ujhup"]
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_m6ggh"]
 random_pitch = 1.5
@@ -65,3 +66,7 @@ stream = ExtResource("7_02gw7")
 [node name="Win" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("8_ujhup")
+
+[node name="Sound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("9_ujhup")
