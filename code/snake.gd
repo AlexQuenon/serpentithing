@@ -157,10 +157,10 @@ func push_blocks(move : Move):
 	# NOTE: This assumes there is no way to carry blocks on the snake
 	for ii in range(affected.size()):
 		var i = affected[ii]
-		if i < snake_coords.size():
+		if i >= snake_coords.size():
 			var curr = block_coords[i - snake_coords.size()] + ABOVE
-			while curr in universal_coords:
-				affected.append(universal_coords[curr])
+			while curr in pushed_map:
+				affected.append(pushed_map[curr])
 				curr += ABOVE
 
 	# NOTE: Snake cannot push self and so these are only boxes
