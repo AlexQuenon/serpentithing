@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://buahcjuy6lxd4"]
+
+[ext_resource type="Script" uid="uid://btc36n1vtjs3" path="res://code/undo_manager.gd" id="1_krvqv"]
+
+[node name="UndoManager" type="Node"]
+script = ExtResource("1_krvqv")

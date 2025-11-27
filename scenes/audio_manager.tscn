@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://borq1hjygiesv"]
+
+[ext_resource type="Script" uid="uid://br6536acpatkn" path="res://code/audio_manager.gd" id="1_liach"]
+[ext_resource type="AudioStream" uid="uid://bvl3bhhorwk81" path="res://sfx/blocked.wav" id="2_3asnw"]
+[ext_resource type="AudioStream" uid="uid://caf77diarhkgf" path="res://sfx/move.wav" id="2_m6ggh"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_m6ggh"]
+random_pitch = 1.5
+streams_count = 1
+stream_0/stream = ExtResource("2_m6ggh")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aoitu"]
+random_pitch = 1.5
+streams_count = 1
+stream_0/stream = ExtResource("2_3asnw")
+
+[node name="AudioManager" type="Node"]
+script = ExtResource("1_liach")
+
+[node name="Move" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_m6ggh")
+
+[node name="Blocked" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_aoitu")

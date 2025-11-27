@@ -47,12 +47,12 @@ func _process(delta):
 		var move : Move = get_input_action()
 		if move != Move.NONE:
 			if apply_move(move):
-				print("TODO: %s successful" % move)
 				# TODO: UNDO SAVE STATE
 				# state get/set
 				emit_coordinates_updated_signal()
+				AudioManager.play_move()
 			else:
-				print("TODO: %s failed" % move)
+				AudioManager.play_blocked()
 
 	flag_falling_blocks()
 
