@@ -56,16 +56,12 @@ const ATLAS_SOURCE = 0
 
 func _ready():
 	position = (Level.SIZE - layer_index - 1) * TILE_LEVEL_OFFSET
-	%WallDecoration.clear()
-	for i in range(Level.SIZE):
-		for j in range(Level.SIZE):
-			if sides_visible(i, j):
-				%WallDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, WALL_DECORATION_COORDS[layer_index])
 	render([], [], Snake.Move.DOWN, {})
 
 
 func render(snake_coords, block_coords, direction, shadow_hints):
 	# TODO: cache snake/box locations to avoid overdoing it
+	%WallDecoration.clear()
 	%Tiles.clear()
 	%FaceDecoration.clear()
 	%ShadowDecoration.clear()
@@ -80,25 +76,31 @@ func render(snake_coords, block_coords, direction, shadow_hints):
 			var coords : Vector3i = snake_coords[i]
 			var tile = get_snake_tile(i, snake_coords[i], snake_coords.size(), block_coords.size(), direction)
 			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
+			%WallDecoration.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, WALL_DECORATION_COORDS[0])  # HACK
 
 	for coords in block_coords:
 		if layer_index == coords.z:
 			var tile = get_box_tile(coords)
 			%Tiles.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, tile)
+			%WallDecoration.set_cell(Vector2i(coords.x, coords.y), ATLAS_SOURCE, WALL_DECORATION_COORDS[0])  # HACK
 
 
 	for i in range(Level.SIZE):
 		for j in range(Level.SIZE):
 			var coord = Vector2i(i, j)
+			if sides_visible(i, j):
+				# HACK
+				if layer_index > 0:
+					%WallDecoration.set_cell(coord, ATLAS_SOURCE, WALL_DECORATION_COORDS[layer_index])
 			if Level.HEIGHT_MAP[i][j] == layer_index:
 				if [i, j] in Level.GOALS:
-					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, GOAL_COORDS)
+					%Tiles.set_cell(coord, ATLAS_SOURCE, GOAL_COORDS)
 				else:
-					%Tiles.set_cell(Vector2i(i, j), ATLAS_SOURCE, TILE_COORDS)
+					%Tiles.set_cell(coord, ATLAS_SOURCE, TILE_COORDS)
 				if layer_index + 1 == active_floor:
-					%FaceDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, FACE_DECORATION_COORDS)
+					%FaceDecoration.set_cell(coord, ATLAS_SOURCE, FACE_DECORATION_COORDS)
 			if shadow_hints.get(coord, 0) > layer_index and %Tiles.get_cell_tile_data(coord) != null:
-				%ShadowDecoration.set_cell(Vector2i(i, j), ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
+				%ShadowDecoration.set_cell(coord, ATLAS_SOURCE, SHADOW_DECORATION_COORDS)
 
 
 func get_snake_tile(index, coord, snake_size, box_size, direction):
