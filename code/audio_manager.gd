@@ -5,3 +5,9 @@ func play_move():
 
 func play_blocked():
 	%Blocked.play()
+
+func play_undo():
+	%Undo.play()
+
+func play_detach():
+	%Detach.play()

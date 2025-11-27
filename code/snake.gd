@@ -31,10 +31,13 @@ var last_direction : Move = Move.DOWN
 var fall_timer : float = 0
 var falling_snake : bool = false
 var falling_blocks = []
+var awaiting_state_checkpoint = false
 
 func _ready():
 	add_segment(START_POSITION)
 	emit_coordinates_updated_signal()
+	UndoManager.rollback_action.connect(set_state)
+	log_state_checkpoint()
 
 
 func _process(delta):
@@ -44,17 +47,49 @@ func _process(delta):
 			make_blocks_fall()
 			fall_timer = 0.0
 	else:
+		if awaiting_state_checkpoint:
+			log_state_checkpoint()
+			awaiting_state_checkpoint = false
+
 		var move : Move = get_input_action()
 		if move != Move.NONE:
 			if apply_move(move):
 				# TODO: UNDO SAVE STATE
 				# state get/set
+				awaiting_state_checkpoint = true
 				emit_coordinates_updated_signal()
-				AudioManager.play_move()
+				if move == Move.DETACH:
+					AudioManager.play_detach()
+				else:
+					AudioManager.play_move()
 			else:
 				AudioManager.play_blocked()
 
 	flag_falling_blocks()
+
+
+func get_state():
+	return [snake_coords.duplicate(), block_coords.duplicate(), last_direction]
+
+
+func set_state(state):
+	snake_coords = state[0].duplicate()
+	block_coords = state[1].duplicate()
+	last_direction = state[2]
+	reset_implicit_state()
+	emit_coordinates_updated_signal()
+
+
+func reset_implicit_state():
+	fall_timer = 0
+	falling_snake = false
+	falling_blocks = []
+	awaiting_state_checkpoint = false
+
+
+func log_state_checkpoint():
+	UndoManager.write_state(get_state())
+
 
 func get_input_action():
 	if Input.is_action_just_pressed('detach'):
