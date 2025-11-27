@@ -60,7 +60,6 @@ func _ready():
 
 
 func render(snake_coords, block_coords, direction, shadow_hints):
-	# TODO: cache snake/box locations to avoid overdoing it
 	%WallDecoration.clear()
 	%Tiles.clear()
 	%FaceDecoration.clear()
@@ -107,7 +106,7 @@ func get_snake_tile(index, coord, snake_size, box_size, direction):
 	var alignment = Alignment.VERTICAL
 	if direction in [Snake.Move.LEFT, Snake.Move.RIGHT]:
 		alignment = Alignment.HORIZONTAL
-	var state = BoxState.CONNECTED  # TODO: branch
+	var state = BoxState.CONNECTED
 	if snake_size == 1 and box_size == Snake.SIZE - snake_size:
 		if Level.coord_on_goal(coord):
 			state = BoxState.ON
@@ -115,8 +114,6 @@ func get_snake_tile(index, coord, snake_size, box_size, direction):
 			state = BoxState.OFF
 
 	var tile = BODY_COORDS
-
-	# TODO: check edge cases for solo snake and activation state
 
 	if index == 0:
 		tile = HEAD_COORDS[state][alignment]
@@ -139,5 +136,3 @@ func sides_visible(i, j):
 		if i >= Level.SIZE or j >= Level.SIZE or Level.HEIGHT_MAP[i][j] >= layer_index:
 			return true
 	return false
-
-# TODO: %FaceDecoration.clear()

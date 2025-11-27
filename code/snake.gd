@@ -2,6 +2,7 @@ class_name Snake
 extends Node
 
 signal coordinates_updated(snake_coords, block_coords, last_direction)
+signal win
 
 enum Move {
 	NONE,
@@ -82,6 +83,7 @@ func _process(delta):
 	if snake_on_goal_after and blocks_on_goals_after.size() == SIZE - 1:
 		AudioManager.play_win()
 		has_won = true
+		win.emit()
 	elif new_snake_on_goal or new_blocks_on_goal:
 		AudioManager.play_goal()
 
@@ -134,8 +136,6 @@ func apply_move(move : Move):
 				return false
 		_:
 			return false
-
-	# TODO: manage falling snakes and blocks (+towers)
 
 	return true
 
