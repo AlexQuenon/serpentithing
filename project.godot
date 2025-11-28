@@ -22,9 +22,11 @@ UndoManager="*res://scenes/undo_manager.tscn"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=800
-window/stretch/scale=2.0
+window/size/viewport_width=400
+window/size/viewport_height=400
+window/size/window_width_override=800
+window/size/window_height_override=800
+window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 
 [file_customization]
@@ -90,3 +92,4 @@ mute={
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.09803922, 0.003921569, 0.101960786, 1)
