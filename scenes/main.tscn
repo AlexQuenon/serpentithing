@@ -150,3 +150,4 @@ anchor_mode = 0
 [connection signal="coordinates_updated" from="Snake" to="Hidden" method="_on_snake_coordinates_updated"]
 [connection signal="win" from="Snake" to="." method="_on_snake_win"]
 [connection signal="toggled" from="Sound" to="Sound" method="_on_toggled"]
+[connection signal="pressed" from="Fullscreen" to="Fullscreen" method="_on_pressed"]
