@@ -9,5 +9,8 @@ func _on_toggled(toggled_on):
 
 
 func _process(_delta):
-	if Input.is_action_just_pressed('fullscreen'):
-		button_pressed = not button_pressed
+	# Handle cases where the window mode has changed outside of pressing the button
+	if get_window().mode == DisplayServer.WINDOW_MODE_FULLSCREEN and not button_pressed:
+		button_pressed = true
+	elif button_pressed:
+		button_pressed = false
