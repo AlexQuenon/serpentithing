@@ -28,7 +28,7 @@ const ROLLBACK_ACTIONS = {
 	'reset': Rollback.RESET,
 }
 
-const REPEAT_FIRST_TIMEOUT = 0.3
+const REPEAT_FIRST_TIMEOUT = 0.2
 const REPEAT_ONGOING_TIMEOUT = 0.2
 
 var timeout = 0.0
