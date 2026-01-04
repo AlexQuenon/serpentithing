@@ -4,14 +4,7 @@ extends Node
 signal coordinates_updated(snake_coords, block_coords, last_direction, goals_met)
 signal win
 
-enum Move {
-	NONE,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT,
-	DETACH,
-}
+const Move = InputManager.Move
 
 const MOVE_MAP = {
 	Move.UP: Vector3i(0, -1, 0),
@@ -57,7 +50,7 @@ func _process(delta):
 			AudioManager.play_landing()
 			log_state_checkpoint()
 	else:
-		var move : Move = get_input_action()
+		var move : Move = InputManager.get_move_action()
 		if move != Move.NONE:
 			if apply_move(move):
 				emit_coordinates_updated_signal()
@@ -111,18 +104,6 @@ func log_state_checkpoint():
 	UndoManager.write_state(get_state())
 
 
-func get_input_action():
-	if Input.is_action_just_pressed('detach'):
-		return Move.DETACH
-	if Input.is_action_just_pressed('up'):
-		return Move.UP
-	if Input.is_action_just_pressed('down'):
-		return Move.DOWN
-	if Input.is_action_just_pressed('left'):
-		return Move.LEFT
-	if Input.is_action_just_pressed('right'):
-		return Move.RIGHT
-	return Move.NONE
 
 
 func apply_move(move : Move):

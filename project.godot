@@ -18,6 +18,7 @@ config/icon="uid://yt14vql5v68b"
 [autoload]
 
 AudioManager="*res://scenes/audio_manager.tscn"
+InputManager="*res://scenes/input_manager.tscn"
 UndoManager="*res://scenes/undo_manager.tscn"
 
 [display]
